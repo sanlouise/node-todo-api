@@ -29,7 +29,8 @@ app.get('/todos', function (req, res) {
 
 //Get individual to-do's.   GET /todos/:id
 app.get('/todos/:id', function (req, res) {
-	var todoId = req.params.id;
+	//Both need to be integers.
+	var todoId = parseInt(req.params.id, 10);
 	var matchedTodo;
 	todos.forEach(function(todo){
 		if (todoId === todo.id) {
@@ -39,9 +40,9 @@ app.get('/todos/:id', function (req, res) {
 
 	if (matchedTodo) {
 		res.json(matchedTodo)
-	} else res.status(404).send();
+	} else  { res.status(404).send();
 	}
-	
+
 });
 
 app.listen(PORT, function () {
