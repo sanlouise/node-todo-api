@@ -1,11 +1,12 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var PORT = process.env.PORT || 3000;
-
-//Create empty array to populate later.
 var todos = [];
-//Increment id for each item (temporary solution).
 var todoNextId = 1;
+
+//Set up middleware body-parser.
+app.use(bodyParser.json());
 
 //Homepage
 app.get('/', function (req, res) {
@@ -40,7 +41,9 @@ app.get('/todos/:id', function (req, res) {
 
 // POST /todos
 app.post('/todos', function (req, res) {
-
+	var body = req.body
+	console.log('description: ' + body.description);
+	res.json(body);
 });
 
 
