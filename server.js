@@ -41,7 +41,7 @@ app.post('/todos', function (req, res) {
 
 	// Check if the completed object is not a boolean or description not a string
 	// Trim removes the spaces before and after - if string is " " this will be converted to empty string
-	if (!_.isBool(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
+	if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
 		return res.status(400).send();
 	}
 
