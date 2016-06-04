@@ -26,9 +26,9 @@ app.get('/todos', function (req, res) {
 		filteredTodos = _.where(filteredTodos, {completed: false});
 	}
 
-	if (queryParams,hasOwnProperty('q') && queryParams.q.length > 0) {
+	if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
 		filteredTodos = _.filter(filteredTodos, function (todo) {
-			return todo.indexOf(queryParams.q) > -1;
+			return todo.description.indexOf(queryParams.q) > -1;
 		});
 	}
 
