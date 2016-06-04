@@ -20,14 +20,14 @@ app.get('/todos', function (req, res) {
 	var queryParams = req.query;
 	var filteredTodos = todos;
 
-	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true' {
+	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
 		filteredTodos = _.where(filteredTodos, {completed: true});
-	} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false' {
+	} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
 		filteredTodos = _.where(filteredTodos, {completed: false});
-	})
+	}
 
 	//Converts to json
-	res.json(todos(filteredTodos);
+	res.json(filteredTodos);
 });
 
 // GET /todos/:id
