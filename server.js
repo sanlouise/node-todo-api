@@ -71,6 +71,37 @@ app.delete('/todos/:id', function (req, res) {
 
 });
 
+// PUT (Update)
+
+app.put('todos/:id', function (res, req) {
+
+	var body = _.pick(req.body, 'description', 'completed');
+	var validAttributes = {};
+
+	if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
+		validAttributes.completed = body.completed;
+	} else if 
+		//If provided and not a boolean.
+		(body.hasOwnProperty('completed')) {
+			return res.status(400).send();
+	} else {
+		//Never provided the attribute. No problem.
+	}
+
+
+	if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0) {
+		validAttributes.description = body.description;
+	} else if 
+		//If provided and not a boolean.
+		(body.hasOwnProperty('description')) {
+			return res.status(400).send();
+	} else {
+		//Never provided the attribute. No problem.
+	}
+
+
+});
+
 
 app.listen(PORT, function () {
 	console.log('Express listening on port ' + PORT + '!')
