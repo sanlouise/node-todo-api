@@ -75,8 +75,15 @@ app.delete('/todos/:id', function (req, res) {
 
 app.put('todos/:id', function (res, req) {
 
+	var todoId = parseInt(req.params.id, 10);
+	var matchedTodo = _.findWhere(todos, {id: todoId});
 	var body = _.pick(req.body, 'description', 'completed');
 	var validAttributes = {};
+
+	//If the todo with this ID does not exist, error.
+	if (!matchedTodo) {
+		return res.status(404).send();
+	} 
 
 	if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
 		validAttributes.completed = body.completed;
@@ -84,22 +91,16 @@ app.put('todos/:id', function (res, req) {
 		//If provided and not a boolean.
 		(body.hasOwnProperty('completed')) {
 			return res.status(400).send();
-	} else {
-		//Never provided the attribute. No problem.
-	}
-
-
+	} 
 	if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0) {
 		validAttributes.description = body.description;
 	} else if 
 		//If provided and not a boolean.
 		(body.hasOwnProperty('description')) {
 			return res.status(400).send();
-	} else {
-		//Never provided the attribute. No problem.
-	}
-
-
+	} 
+	//Update the matchedTodo with new data.
+	_.extend(matchedTodo, validAttributes);
 });
 
 
