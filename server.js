@@ -38,7 +38,7 @@ app.get('/todos/:id', function (req, res) {
 // POST /todos
 app.post('/todos', function (req, res) {
 
-	//Whitelist fields
+	//Whitelist fields. Gets rid of all unwanted fields.
 	var body = _.pick(req.body, 'description', 'completed');
 
 	// Check if the completed object is not a boolean or description not a string
@@ -53,6 +53,22 @@ app.post('/todos', function (req, res) {
 	body.id = todoNextId ++;
 	todos.push(body);
 	res.json(body);
+});
+
+// DELETE /todos/:id
+
+app.delete('/todos/:id', function (req, res) {
+	//Both need to be integers.
+	var todoId = parseInt(req.params.id, 10);
+	var matchedTodo = _.findWhere(todos, {id: todoId});
+
+	if (!matchedTodo) {
+		res.status(404).json({"error": "Oops, no todo found with that ID!"});
+	} else {
+		todos = _.without(todos, matchedTodo);
+		res.json(matchedTodo);
+	}
+
 });
 
 
