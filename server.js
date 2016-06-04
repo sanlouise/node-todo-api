@@ -37,13 +37,18 @@ app.get('/todos/:id', function (req, res) {
 
 // POST /todos
 app.post('/todos', function (req, res) {
-	var body = req.body;
+
+	//Whitelist fields
+	var body = _.pick(req.body, 'description', 'completed');
 
 	// Check if the completed object is not a boolean or description not a string
 	// Trim removes the spaces before and after - if string is " " this will be converted to empty string
 	if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
 		return res.status(400).send();
 	}
+
+	//Description should be trimmed value.
+	body.description = body.description.trim();
 
 	body.id = todoNextId ++;
 	todos.push(body);
