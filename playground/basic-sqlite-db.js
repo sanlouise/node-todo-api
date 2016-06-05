@@ -28,8 +28,37 @@ sequelize.sync().then(function () {
 	Todo.create({
 		description: 'Walk the dog',
 		completed: false
+
+
 	}).then(function (todo) {
-		console.log('Finished!');
-		console.log(todo);
+		return Todo.create({
+			description: 'Clean Office'
+
+		// Fetch data
+		}).then(function () {
+			// return Todo.findById(1)
+			return Todo.findAll({
+				where: {
+					completed: false
+				}
+			});
+
+		//JSONify fetched data
+		}).then(function (todos) {
+			if (todos) {
+				//Loop over individually fetched items
+				todos.forEach(function (todo) {
+				console.log(todos.toJSON());
+				
+				});
+
+			} else {
+				console.log("Oops, no todo found!");
+			}
+		});
+
+	})
+	.catch(function (e) {
+		console.log(e);
 	});
 });
