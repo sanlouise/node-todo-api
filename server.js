@@ -45,16 +45,18 @@ app.get('/todos', function(req, res) {
 app.get('/todos/:id', function(req, res) {
 	//Both need to be integers
 	var todoId = parseInt(req.params.id, 10);
-	//findWhere returns a single object
-	var matchedTodo = _.findWhere(todos, {
-		id: todoId
-	});
 
-	if (matchedTodo) {
-		res.json(matchedTodo)
-	} else {
-		res.status(404).send();
-	}
+	db.todo.findById(todoId).then(function(todo) {
+		//!! Converts a thruthy or falsy object into a boolean
+		if (!!todo) {
+			res.json(todo.toJSON()); 
+		} else {
+			res.status(404).send();
+		}
+	}, function(e) {
+		//Something went wrong on the server's end
+		res.status(500).send();
+	});
 
 });
 
@@ -64,24 +66,11 @@ app.post('/todos', function(req, res) {
 	//Whitelist fields. Gets rid of all unwanted fields
 	var body = _.pick(req.body, 'description', 'completed');
 
-	db.todo.create(body).then(function (todo) {
+	db.todo.create(body).then(function(todo) {
 		res.json(todo.toJSON());
-	}, function (e) {
+	}, function(e) {
 		res.status(400).toJSON(e);
 	});
-
-	// Check if the completed object is not a boolean or description not a string
-	// Trim removes the spaces before and after - if string is " " this will be converted to empty string
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-	// 	return res.status(400).send();
-	// }
-
-	// //Description should be trimmed value.
-	// body.description = body.description.trim();
-
-	// body.id = todoNextId++;
-	// todos.push(body);
-	// res.json(body);
 
 });
 
