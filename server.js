@@ -33,7 +33,7 @@ app.get('/todos', function(req, res) {
 		};
 	}
 
-	db.todo.findAll({where: where}).then(function() {
+	db.todo.findAll({where: where}).then(function(todos) {
 		res.json(todos);
 
 	}, function(e) {
