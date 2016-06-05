@@ -33,7 +33,9 @@ app.get('/todos', function(req, res) {
 		};
 	}
 
-	db.todo.findAll({where: where}).then(function(todos) {
+	db.todo.findAll({
+		where: where
+	}).then(function(todos) {
 		res.json(todos);
 
 	}, function(e) {
@@ -46,7 +48,6 @@ app.get('/todos', function(req, res) {
 app.get('/todos/:id', function(req, res) {
 	//Both need to be integers
 	var todoId = parseInt(req.params.id, 10);
-
 	db.todo.findById(todoId).then(function(todo) {
 		//!! Converts a thruthy or falsy object into a boolean
 		if (!!todo) {
@@ -78,20 +79,27 @@ app.post('/todos', function(req, res) {
 // DELETE /todos/:id
 
 app.delete('/todos/:id', function(req, res) {
-	//Both need to be integers.
 	var todoId = parseInt(req.params.id, 10);
-	var matchedTodo = _.findWhere(todos, {
-		id: todoId
-	});
+	//Both need to be integers.
+	db.todo.destroy({
+		where: {
+			id: todoId
+		}
+	}).then(function(rowsDeleted) {
 
-	if (!matchedTodo) {
-		res.status(404).json({
-			"error": "Oops, no todo found with that ID!"
-		});
-	} else {
-		todos = _.without(todos, matchedTodo);
-		res.json(matchedTodo);
-	}
+		if (rowsDeleted === 0) {
+			res.status(404).json({
+				error: 'There is no item with that ID'
+			});
+		} else {
+			//204 instead of 200. 200 sends data back, now there's nothing to send back.
+			res.status(204).send();
+		}
+
+	}, function(e) {
+		//Something went wrong on the server's end
+		res.status(500).send();
+	});
 
 });
 
