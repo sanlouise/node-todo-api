@@ -39,7 +39,11 @@ sequelize.sync({
 		// return Todo.findById(1)
 		return Todo.findAll({
 			where: {
-				completed: false
+				description: {
+
+					//Capitalization is not important
+					$like: '%clean%'
+				}
 			}
 		});
 
@@ -49,7 +53,6 @@ sequelize.sync({
 			//Loop over individually fetched items
 			todos.forEach(function(todo) {
 				console.log(todo.toJSON());
-
 			});
 
 		} else {
