@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 //Create a new instance of sequelize
 var sequelize = new Sequelize(undefined, undefined, undefined, {
-	'dialect': 'sqlite', 
+	'dialect': 'sqlite',
 	'storage': __dirname + '/basic-sqlite-db.sqlite'
 });
 
@@ -13,7 +13,7 @@ var Todo = sequelize.define('todo', {
 		validate: {
 			len: [1, 250]
 		}
-	}, 
+	},
 	completed: {
 		type: Sequelize.BOOLEAN,
 		allowNull: false,
@@ -22,43 +22,41 @@ var Todo = sequelize.define('todo', {
 	}
 });
 
-sequelize.sync().then(function () {
+sequelize.sync({
+	force: true
+}).then(function() {
 	console.log('Everything is synched');
 
 	Todo.create({
-		description: 'Walk the dog',
-		completed: false
+		description: 'Walk the dog'
 
-
-	}).then(function (todo) {
+	}).then(function(todo) {
 		return Todo.create({
 			description: 'Clean Office'
-
+		});
 		// Fetch data
-		}).then(function () {
-			// return Todo.findById(1)
-			return Todo.findAll({
-				where: {
-					completed: false
-				}
-			});
-
-		//JSONify fetched data
-		}).then(function (todos) {
-			if (todos) {
-				//Loop over individually fetched items
-				todos.forEach(function (todo) {
-				console.log(todos.toJSON());
-				
-				});
-
-			} else {
-				console.log("Oops, no todo found!");
+	}).then(function() {
+		// return Todo.findById(1)
+		return Todo.findAll({
+			where: {
+				completed: false
 			}
 		});
 
-	})
-	.catch(function (e) {
+		//JSONify fetched data
+	}).then(function(todos) {
+		if (todos) {
+			//Loop over individually fetched items
+			todos.forEach(function(todo) {
+				console.log(todo.toJSON());
+
+			});
+
+		} else {
+			console.log("Oops, no todo found!");
+		}
+
+	}).catch(function(e) {
 		console.log(e);
 	});
 });
