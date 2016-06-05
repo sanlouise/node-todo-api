@@ -65,9 +65,9 @@ app.post('/todos', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 
 	db.todo.create(body).then(function (todo) {
-		res.json(todo.JSON());
+		res.json(todo.toJSON());
 	}, function (e) {
-		res.status(400).json(e);
+		res.status(400).toJSON(e);
 	});
 
 	// Check if the completed object is not a boolean or description not a string
@@ -82,9 +82,6 @@ app.post('/todos', function(req, res) {
 	// body.id = todoNextId++;
 	// todos.push(body);
 	// res.json(body);
-
-
-
 
 });
 
