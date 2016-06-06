@@ -111,6 +111,7 @@ app.put('/todos/:id', function(req, res) {
 		attributes.description = body.description;
 	}
 	//Update the data. We have to use instance methods, because the model already exists and is fetched.
+	//Model methods start with db.
 	db.todo.findById(todoId).then(function(todo) {
 		if (todo) {
 			return todo.update(attributes);
@@ -137,7 +138,7 @@ app.post('/users', function(req, res) {
 
 	var body = _.pick(req.body, 'email', 'password');
 	db.user.create(body).then(function(user) {
-		res.json(user.toJSON());
+		res.json(user.toPublicJSON());
 
 	}, function(e) {
 		//Use .json here, not toJSON to evade no function error.
