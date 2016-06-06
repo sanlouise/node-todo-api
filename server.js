@@ -115,7 +115,6 @@ app.put('/todos/:id', function(req, res) {
 	if (body.hasOwnProperty('description')) {
 		attributes.description = body.description;
 	}
-
 	//Update the data. We have to use instance methods, because the model already exists and is fetched.
 	db.todo.findById(todoId).then(function(todo) {
 		if (todo) {
@@ -125,9 +124,10 @@ app.put('/todos/:id', function(req, res) {
 		}
 	}, function() {
 		res.status(500).send();
+	})
 
-		//The success callback
-	}).then(function(todo) {
+	//The success callback
+	.then(function(todo) {
 		res.json(todo.toJSON());
 
 	}, function(e) {
