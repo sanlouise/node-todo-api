@@ -140,7 +140,8 @@ app.post('/users', function(req, res) {
 		res.json(user.toJSON());
 
 	}, function(e) {
-		res.status(400).toJSON(e);
+		//Use .json here, not toJSON to evade no function error.
+		res.status(400).json(e);
 	});
 });
 
