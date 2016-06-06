@@ -17,5 +17,15 @@ module.exports = function(sequelize, DataTypes) {
 				len: [7, 100]
 			}
 		}
+	}, {
+		hooks: {
+			// Runs before validate
+			beforeValidate: function (user, options) {
+				//Convert string emails to lowercase
+				if (typeof user.email === 'string') {
+					user.email = user.email.toLowerCase();
+				}
+			} 
+		}
 	});
 }
