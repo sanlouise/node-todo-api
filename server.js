@@ -76,27 +76,22 @@ app.post('/todos', function(req, res) {
 });
 
 // DELETE /todos/:id
-
 app.delete('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	//Both need to be integers.
+
 	db.todo.destroy({
 		where: {
 			id: todoId
 		}
 	}).then(function(rowsDeleted) {
-
 		if (rowsDeleted === 0) {
 			res.status(404).json({
-				error: 'There is no item with that ID'
+				error: 'No todo with id'
 			});
 		} else {
-			//204 instead of 200. 200 sends data back, now there's nothing to send back.
 			res.status(204).send();
 		}
-
-	}, function(e) {
-		//Something went wrong on the server's end
+	}, function() {
 		res.status(500).send();
 	});
 });

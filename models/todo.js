@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
 		validate: {
 			descriptionIsString: function() {
 				if (!_.isString(this.description)) {
-					throw new Error('Description must be string.')
+					throw new Error('Description must be a string.')
 				}
 			}
 		}
