@@ -2,6 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
+var bcrypt = require('bcrypt');
+
 var app = express();
 var PORT = process.env.PORT || 3000;
 var todos = [];
@@ -159,12 +161,12 @@ app.post('/users/login', function(req, res) {
 			email: body.email
 		}
 	}).then(function (user) {
-		if (!user) {
+		if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) {
 			// Authentication failed
-			return res.status(401);
-		} 
-		res.json(user.toJSON());
+			return res.status(401).send();
+		}
 
+		res.json(user.toJSON());
 	}, function (e) {
 		res.status(500).send();
 	});
