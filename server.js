@@ -135,7 +135,6 @@ app.put('/todos/:id', function(req, res) {
 
 //User POST
 app.post('/users', function(req, res) {
-
 	var body = _.pick(req.body, 'email', 'password');
 	db.user.create(body).then(function(user) {
 		res.json(user.toPublicJSON());
@@ -145,6 +144,35 @@ app.post('/users', function(req, res) {
 		res.status(400).json(e);
 	});
 });
+
+//user POST /users/login
+app.post('/users/login', function(req, res) {
+	var body = _.pick(req.body, 'email', 'password');
+	var loggingUser = req.params.id;
+
+	if (typeof body.email !== 'string' || typeof body.password !== 'string') {
+		return res.status(400).send();
+	}
+
+	db.user.findOne({
+		where: {
+			email: body.email
+		}
+	}).then(function (user) {
+		if (!user) {
+			// Authentication failed
+			return res.status(401);
+		} 
+		res.json(user.toJSON());
+
+	}, function (e) {
+		res.status(500).send();
+	});
+
+});
+
+
+
 
 //Sync data to db
 db.sequelize.sync().then(function() {
