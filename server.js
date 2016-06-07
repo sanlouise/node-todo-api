@@ -166,7 +166,7 @@ app.post('/users/login', function(req, res) {
 			return res.status(401).send();
 		}
 
-		res.json(user.toJSON());
+		res.json(user.toPublicJSON());
 	}, function (e) {
 		res.status(500).send();
 	});
