@@ -77,7 +77,7 @@ module.exports = function(sequelize, DataTypes) {
 
 					try {
 						//Methods provided by jwt
-						var decodedJWT.jwt.verify(token, 'qwerty098');
+						var decodedJWT = jwt.verify(token, 'qwerty098');
 						//Decrypt data via AES
 						var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#!');
 						//Tranform the decoded string to JSON
