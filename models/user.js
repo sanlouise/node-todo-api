@@ -1,7 +1,7 @@
 var bcrypt = require('bcrypt');
 var _ = require('underscore');
 var cryptojs = require('crypto-js');
-var jsonwt = require('jsonwebtoken');
+var jwt = require('jsonwebtoken');
 
 // When imported with sequelize, ensure proper format of file.
 module.exports = function(sequelize, DataTypes) {
@@ -70,8 +70,35 @@ module.exports = function(sequelize, DataTypes) {
 						return reject();
 					});
 				});
-			}
+			},
 
+			findByToken: function (token) {
+				return new Promise(function (resolve, reject) {
+
+					try {
+						//Methods provided by jwt
+						var decodedJWT.jwt.verify(token, 'qwerty098');
+						//Decrypt data via AES
+						var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#!');
+						//Tranform the decoded string to JSON
+						var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+
+						user.findById(tokenData.id).then(function (user) {
+							if(user) {
+								resolve(user);
+							} else {
+								reject();
+							}
+						}, function (e) {
+							reject();
+						});
+					} catch (e) {
+						//Rejects middleware, private code will not run.
+						reject();
+
+					}
+				});
+			}
 		},
 
 		//Use instance methods when working with existig models.
@@ -90,7 +117,7 @@ module.exports = function(sequelize, DataTypes) {
 					//Type is authentication in this case.
 					var stringData = JSON.stringify({id: this.get('id'), type: type});
 					var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#!').toString();
-					var token = jsonwt.sign({
+					var token = jwt.sign({
 						//Body of token
 						token: encryptedData
 						//Jsonwebtoken password
