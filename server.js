@@ -20,10 +20,9 @@ app.get('/', function(req, res) {
 
 // GET /todos?completed=true
 app.get('/todos', middleware.requireAuthentication, function(req, res) {
-	//Query. Where is a sequelize method.
 	var query = req.query;
 	var where = {
-		userId = req.user.get('id');
+		userId: req.user.get('id')
 	};
 
 	if (query.hasOwnProperty('completed') && query.completed === 'true') {
@@ -53,7 +52,13 @@ app.get('/todos', middleware.requireAuthentication, function(req, res) {
 app.get('/todos/:id', middleware.requireAuthentication, function(req, res) {
 	//Both need to be integers
 	var todoId = parseInt(req.params.id, 10);
-	db.todo.findById(todoId).then(function(todo) {
+	db.todo.findOne({
+		where: {
+			id: todoId,
+			userId: req.user.get('id')
+		}
+
+	}).then(function(todo) {
 		//!! Converts a thruthy or falsy object into a boolean
 		if (!!todo) {
 			res.json(todo.toJSON());
@@ -90,12 +95,13 @@ app.delete('/todos/:id', middleware.requireAuthentication, function(req, res) {
 
 	db.todo.destroy({
 		where: {
-			id: todoId
+			id: todoId,
+			userId: req.user.get('id')
 		}
 	}).then(function(rowsDeleted) {
 		if (rowsDeleted === 0) {
 			res.status(404).json({
-				error: 'No todo with id'
+				error: 'No todo with this id'
 			});
 		} else {
 			res.status(204).send();
@@ -121,7 +127,11 @@ app.put('/todos/:id', middleware.requireAuthentication, function(req, res) {
 	}
 	//Update the data. We have to use instance methods, because the model already exists and is fetched.
 	//Model methods start with db.
-	db.todo.findById(todoId).then(function(todo) {
+	db.todo.findOne({
+    where: {
+        id: todoId,
+        userId: req.user.get('id')
+    }.then(function(todo) {
 		if (todo) {
 			return todo.update(attributes);
 		} else {
