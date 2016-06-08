@@ -52,7 +52,7 @@ module.exports = function(sequelize, DataTypes) {
 					return new Promise(function(resolve, reject) {
 
 						if (typeof body.email !== 'string' || typeof body.password !== 'string') {
-							reject();
+							return reject();
 						}
 						user.findOne({
 							where: {
@@ -61,25 +61,24 @@ module.exports = function(sequelize, DataTypes) {
 						}).then(function(user) {
 							if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) {
 								// Authentication failed
-								reject();
+								return reject();
 							}
-							resolve(user);
+							return resolve(user);
 						}, function(e) {
-							reject();
+							return reject();
 						});
 					});
 				}
+
+			},
+			instanceMethods: {
+				toPublicJSON: function() {
+					var json = this.toJSON();
+					return _.pick(json, 'id', 'email', 'createdAt', 'updatedAt');
+				}
 			}
 
-		},
-		instanceMethods: {
-			toPublicJSON: function() {
-				var json = this.toJSON();
-				return _.pick(json, 'id', 'email', 'createdAt', 'updatedAt');
-			}
-		}
-
-	});
+		});
 
 	return user;
 };
