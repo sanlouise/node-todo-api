@@ -150,8 +150,6 @@ app.post('/users', function(req, res) {
 //user POST /users/login
 app.post('/users/login', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
-	var loggingUser = req.params.id;
-
 	db.user.authenticate(body).then(function (user) {
 		res.json(user.toPublicJSON());
 	}, function () {
@@ -159,28 +157,7 @@ app.post('/users/login', function(req, res) {
 		res.status(401).send();
 	});
 
-	if (typeof body.email !== 'string' || typeof body.password !== 'string') {
-		return res.status(400).send();
-	}
-
-	db.user.findOne({
-		where: {
-			email: body.email
-		}
-	}).then(function (user) {
-		if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) {
-			// Authentication failed
-			return res.status(401).send();
-		}
-
-		res.json(user.toPublicJSON());
-	}, function (e) {
-		res.status(500).send();
-	});
-
 });
-
-
 
 
 //Sync data to db
