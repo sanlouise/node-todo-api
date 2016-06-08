@@ -140,7 +140,6 @@ app.post('/users', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
 	db.user.create(body).then(function(user) {
 		res.json(user.toPublicJSON());
-
 	}, function(e) {
 		//Use .json here, not toJSON to evade no function error.
 		res.status(400).json(e);
@@ -151,12 +150,13 @@ app.post('/users', function(req, res) {
 app.post('/users/login', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
 	db.user.authenticate(body).then(function (user) {
-		res.json(user.toPublicJSON());
+		//The header contains the secret json web token.
+		res.header('Auth', user.generateToken('authentication')).json(user.toPublicJSON());
+
 	}, function () {
 		// Authentication failed
 		res.status(401).send();
 	});
-
 });
 
 

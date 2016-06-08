@@ -97,6 +97,7 @@ module.exports = function(sequelize, DataTypes) {
 					}, 'qwerty098');
 					return token;
 				} catch (e) {
+					console.error(e);
 					return undefined;
 				}
 			}
