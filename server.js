@@ -161,17 +161,20 @@ app.post('/users', function(req, res) {
 //user POST /users/login
 app.post('/users/login', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
+	var userInstance;
+
 	db.user.authenticate(body).then(function(user) {
 		//The header contains the secret json web token.
 		var token = user.generateToken('authentication');
 
-		if (token) {
-			res.header('Auth', token).json(user.toPublicJSON());
-		} else {
-			res.status(401).send();
-		}
+		//Store token in db to enable logout later
+		return db.token.create({
+			token: token
+		});
 
-	}, function() {
+		//This runs after token.create finishes
+	}).then(function () {
+		catch(function() {
 		// Authentication failed
 		res.status(401).send();
 	});
