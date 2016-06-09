@@ -15,19 +15,20 @@ module.exports = function (db) {
 				}
 			//If the tokenHash was found in db, run the text block of code
 			}).then(function (tokenInstance) {
-				if(!tokenInstance)
+				if(!tokenInstance) {
 					throw new Error();
 				}
+				
 
 				req.token = tokenInstance;
-				rturn db.user.findByToken(token);
+				return db.user.findByToken(token);
 
 				//If findByToken is successfull, this code will run
-			}).then (function(user) {
+			}).then(function(user) {
 				req.user = user;
 				next();
 
-			})catch(function () {
+			}).catch(function () {
 				res.status(401).send();
 
 			});
