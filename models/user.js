@@ -72,8 +72,8 @@ module.exports = function(sequelize, DataTypes) {
 				});
 			},
 
-			findByToken: function (token) {
-				return new Promise(function (resolve, reject) {
+			findByToken: function(token) {
+				return new Promise(function(resolve, reject) {
 
 					try {
 						//Methods provided by jwt
@@ -83,13 +83,13 @@ module.exports = function(sequelize, DataTypes) {
 						//Tranform the decoded string to JSON
 						var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
 
-						user.findById(tokenData.id).then(function (user) {
-							if(user) {
+						user.findById(tokenData.id).then(function(user) {
+							if (user) {
 								resolve(user);
 							} else {
 								reject();
 							}
-						}, function (e) {
+						}, function(e) {
 							reject();
 						});
 					} catch (e) {
@@ -108,19 +108,22 @@ module.exports = function(sequelize, DataTypes) {
 				return _.pick(json, 'id', 'email', 'createdAt', 'updatedAt');
 			},
 
-			generateToken: function (type) {
+			generateToken: function(type) {
 				if (!_.isString(type)) {
 					return undefined;
 				}
 				try {
 					//Encrypt user information and create new JSON web token.
 					//Type is authentication in this case.
-					var stringData = JSON.stringify({id: this.get('id'), type: type});
+					var stringData = JSON.stringify({
+						id: this.get('id'),
+						type: type
+					});
 					var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#!').toString();
 					var token = jwt.sign({
 						//Body of token
 						token: encryptedData
-						//Jsonwebtoken password
+							//Jsonwebtoken password
 					}, 'qwerty098');
 					return token;
 				} catch (e) {

@@ -78,9 +78,9 @@ app.post('/todos', middleware.requireAuthentication, function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 
 	db.todo.create(body).then(function(todo) {
-		req.user.addTodo(todo).then(function () {
+		req.user.addTodo(todo).then(function() {
 			return todo.reload();
-		}).then(function (todo) {
+		}).then(function(todo) {
 			res.json(todo.toJSON());
 		});
 	}, function(e) {
@@ -173,7 +173,7 @@ app.post('/users/login', function(req, res) {
 		});
 
 		//This runs after token.create finishes
-	}).then(function (tokenInstance) {
+	}).then(function(tokenInstance) {
 
 		//Auth in header is set equal to token
 		res.header('Auth', tokenInstance.get('token')).json(userInstance.toPublicJSON());
@@ -184,17 +184,19 @@ app.post('/users/login', function(req, res) {
 });
 
 //DELETE /users/login
-app.delete('/users/login', middleware.requireAuthentication, function (req, res) {
-	req.token.destroy().then(function () {
+app.delete('/users/login', middleware.requireAuthentication, function(req, res) {
+	req.token.destroy().then(function() {
 		res.status(204).send();
-	}).catch (function () {
+	}).catch(function() {
 		res.status(500).send()
 	});
 });
 
 
 //Sync data to db
-db.sequelize.sync({force: true}).then(function() {
+db.sequelize.sync({
+	force: true
+}).then(function() {
 	app.listen(PORT, function() {
 		console.log('Express listening on port ' + PORT + '!')
 	});

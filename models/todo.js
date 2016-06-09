@@ -9,10 +9,10 @@ module.exports = function(sequelize, DataTypes) {
 			validate: {
 				len: [1, 250],
 				descriptionIsString: function() {
-            if (!_.isString(this.description)) {
-               throw new Error('Description must be string.')
-            }
-         }
+					if (!_.isString(this.description)) {
+						throw new Error('Description must be string.')
+					}
+				}
 			}
 		},
 		completed: {
