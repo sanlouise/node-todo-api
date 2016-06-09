@@ -166,15 +166,18 @@ app.post('/users/login', function(req, res) {
 	db.user.authenticate(body).then(function(user) {
 		//The header contains the secret json web token.
 		var token = user.generateToken('authentication');
-
+		userInstance = user;
 		//Store token in db to enable logout later
 		return db.token.create({
 			token: token
 		});
 
 		//This runs after token.create finishes
-	}).then(function () {
-		catch(function() {
+	}).then(function (tokenInstance) {
+
+		//Auth in header is set equal to token
+		res.header('Auth', tokenInstance.get('token')).json(userInstance.toPublicJSON());
+	}).catch(function() {
 		// Authentication failed
 		res.status(401).send();
 	});
