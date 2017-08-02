@@ -1,12 +1,12 @@
-var bcrypt = require('bcrypt');
-var _ = require('underscore');
-var cryptojs = require('crypto-js');
-var jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const _ = require('underscore');
+const cryptojs = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 // When imported with sequelize, ensure proper format of file.
 module.exports = function(sequelize, DataTypes) {
 
-	var user = sequelize.define('user', {
+	const user = sequelize.define('user', {
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -31,8 +31,8 @@ module.exports = function(sequelize, DataTypes) {
 			},
 			set: function(value) {
 				//Takes nr of chars you want to add to password.
-				var salt = bcrypt.genSaltSync(10);
-				var hashedPassword = bcrypt.hashSync(value, salt);
+				const salt = bcrypt.genSaltSync(10);
+				const hashedPassword = bcrypt.hashSync(value, salt);
 
 				this.setDataValue('password', value);
 				this.setDataValue('salt', salt);
@@ -77,11 +77,11 @@ module.exports = function(sequelize, DataTypes) {
 
 					try {
 						//Methods provided by jwt
-						var decodedJWT = jwt.verify(token, 'qwerty098');
+						const decodedJWT = jwt.verify(token, 'qwerty098');
 						//Decrypt data via AES
-						var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#!');
+						const bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!@#!');
 						//Tranform the decoded string to JSON
-						var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+						const tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
 
 						user.findById(tokenData.id).then(function(user) {
 							if (user) {
@@ -95,7 +95,6 @@ module.exports = function(sequelize, DataTypes) {
 					} catch (e) {
 						//Rejects middleware, private code will not run.
 						reject();
-
 					}
 				});
 			}
@@ -104,7 +103,7 @@ module.exports = function(sequelize, DataTypes) {
 		//Use instance methods when working with existig models.
 		instanceMethods: {
 			toPublicJSON: function() {
-				var json = this.toJSON();
+				const json = this.toJSON();
 				return _.pick(json, 'id', 'email', 'createdAt', 'updatedAt');
 			},
 
@@ -115,12 +114,12 @@ module.exports = function(sequelize, DataTypes) {
 				try {
 					//Encrypt user information and create new JSON web token.
 					//Type is authentication in this case.
-					var stringData = JSON.stringify({
+					const stringData = JSON.stringify({
 						id: this.get('id'),
 						type: type
 					});
-					var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#!').toString();
-					var token = jwt.sign({
+					const encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#!').toString();
+					const token = jwt.sign({
 						//Body of token
 						token: encryptedData
 							//Jsonwebtoken password

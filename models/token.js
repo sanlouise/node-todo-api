@@ -1,6 +1,6 @@
 //We need to store the hashed value token to log out users.
 
-var cryptojs = require('crypto-js');
+const cryptojs = require('crypto-js');
 
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('token', {
@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
 				len: [1]
 			},
 			set: function(value) {
-				var hash = cryptojs.MD5(value).toString();
+				const hash = cryptojs.MD5(value).toString();
 				this.setDataValue('token', value);
 				//Set tokenHash equal to hash
 				this.setDataValue('tokenHash', hash)

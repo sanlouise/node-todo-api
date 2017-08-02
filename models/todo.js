@@ -1,5 +1,5 @@
 // When imported with sequelize, ensure proper format of file.
-var _ = require('underscore');
+const _ = require('underscore');
 
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('todo', {

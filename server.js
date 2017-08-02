@@ -1,14 +1,14 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var _ = require('underscore');
-var db = require('./db.js');
-var bcrypt = require('bcrypt');
-var middleware = require('./middleware.js')(db)
+const express = require('express');
+const bodyParser = require('body-parser');
+const _ = require('underscore');
+const db = require('./db.js');
+const bcrypt = require('bcrypt');
+const middleware = require('./middleware.js')(db)
 
-var app = express();
-var PORT = process.env.PORT || 3000;
-var todos = [];
-var todoNextId = 1;
+const app = express();
+const PORT = process.env.PORT || 3000;
+const todos = [];
+const todoNextId = 1;
 
 //Set up middleware body-parser.
 app.use(bodyParser.json());
@@ -20,8 +20,8 @@ app.get('/', function(req, res) {
 
 // GET /todos?completed=true
 app.get('/todos', middleware.requireAuthentication, function(req, res) {
-	var query = req.query;
-	var where = {
+	const query = req.query;
+	const where = {
 		userId: req.user.get('id')
 	};
 
@@ -51,7 +51,7 @@ app.get('/todos', middleware.requireAuthentication, function(req, res) {
 // GET /todos/:id
 app.get('/todos/:id', middleware.requireAuthentication, function(req, res) {
 	//Both need to be integers
-	var todoId = parseInt(req.params.id, 10);
+	const todoId = parseInt(req.params.id, 10);
 	db.todo.findOne({
 		where: {
 			id: todoId,
@@ -75,7 +75,7 @@ app.get('/todos/:id', middleware.requireAuthentication, function(req, res) {
 // POST /todos
 app.post('/todos', middleware.requireAuthentication, function(req, res) {
 	//Whitelist fields. Gets rid of all unwanted fields
-	var body = _.pick(req.body, 'description', 'completed');
+	const body = _.pick(req.body, 'description', 'completed');
 
 	db.todo.create(body).then(function(todo) {
 		req.user.addTodo(todo).then(function() {
@@ -91,7 +91,7 @@ app.post('/todos', middleware.requireAuthentication, function(req, res) {
 
 // DELETE /todos/:id
 app.delete('/todos/:id', middleware.requireAuthentication, function(req, res) {
-	var todoId = parseInt(req.params.id, 10);
+	const todoId = parseInt(req.params.id, 10);
 
 	db.todo.destroy({
 		where: {
@@ -113,9 +113,9 @@ app.delete('/todos/:id', middleware.requireAuthentication, function(req, res) {
 
 /// PUT /todos/:id
 app.put('/todos/:id', middleware.requireAuthentication, function(req, res) {
-	var todoId = parseInt(req.params.id, 10);
-	var body = _.pick(req.body, 'description', 'completed');
-	var attributes = {};
+	const todoId = parseInt(req.params.id, 10);
+	const body = _.pick(req.body, 'description', 'completed');
+	const attributes = {};
 
 	// With Sequelize, validations are in the model
 	if (body.hasOwnProperty('completed')) {
@@ -149,7 +149,7 @@ app.put('/todos/:id', middleware.requireAuthentication, function(req, res) {
 
 //User POST
 app.post('/users', function(req, res) {
-	var body = _.pick(req.body, 'email', 'password');
+	const body = _.pick(req.body, 'email', 'password');
 	db.user.create(body).then(function(user) {
 		res.json(user.toPublicJSON());
 	}, function(e) {
@@ -160,12 +160,12 @@ app.post('/users', function(req, res) {
 
 //user POST /users/login
 app.post('/users/login', function(req, res) {
-	var body = _.pick(req.body, 'email', 'password');
-	var userInstance;
+	const body = _.pick(req.body, 'email', 'password');
+	const userInstance;
 
 	db.user.authenticate(body).then(function(user) {
 		//The header contains the secret json web token.
-		var token = user.generateToken('authentication');
+		const token = user.generateToken('authentication');
 		userInstance = user;
 		//Store token in db to enable logout later
 		return db.token.create({

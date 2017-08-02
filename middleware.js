@@ -1,11 +1,11 @@
-var cryptojs = require('crypto-js');
+const cryptojs = require('crypto-js');
 
 module.exports = function(db) {
 	return {
 		//Without next, private code is never gonna run. This code is in server.js, whole block
 		//after 'app.get(/todos', . Middleware is run before that code executes.
 		requireAuthentication: function(req, res, next) {
-			var token = req.get('Auth') || '';
+			const token = req.get('Auth') || '';
 
 			//Looking for a token in the database, created via login
 			db.token.findOne({
