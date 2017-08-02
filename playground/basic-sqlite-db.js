@@ -1,12 +1,12 @@
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 //Create a new instance of sequelize
-var sequelize = new Sequelize(undefined, undefined, undefined, {
+const sequelize = new Sequelize(undefined, undefined, undefined, {
 	'dialect': 'sqlite',
 	'storage': __dirname + '/basic-sqlite-db.sqlite'
 });
 
 //Create Todo model
-var Todo = sequelize.define('todo', {
+const Todo = sequelize.define('todo', {
 	description: {
 		type: Sequelize.STRING,
 		allowNull: false,
@@ -24,7 +24,7 @@ var Todo = sequelize.define('todo', {
 
 
 
-var User = sequelize.define('user', {
+const User = sequelize.define('user', {
 	email: Sequelize.STRING
 });
 
